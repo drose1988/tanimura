@@ -1,10 +1,10 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- many databases are set to UTC the global standard, its the most common but certainly not universal
 -- the one drawback to UTC is that we lose information about the local time humans do actions 
 
 SELECT '2020-09-01 00:00:00 -0' at time zone 'pst'; -- changing from UTC to PST
 
------------------- FORMAT CONVERSION ------------------
-
+------------------------------------------------------ FORMAT CONVERSION --------------------------------------------------------------------------------
 
 SELECT current_date;
 SELECT localtimestamp;
@@ -50,7 +50,7 @@ SELECT make_date(2020,09,01);
 SELECT to_date(CONCAT(2020,'-',09,'-',01),'yyyy-mm-dd');
 SELECT cast(concat(2020,'-',09,'-',01) as date);
 
------------------- DATE MATH ------------------
+-------------------------------------------------- DATE MATH -------------------------------------------------------------------------------------------
 
     -- involves two types of data: the dates themselves and intervals
     -- intervals are needed because date and times don't behave like integers
@@ -83,7 +83,7 @@ SELECT time '05:00' - time '03:00' as new_time;
 -- times can be multiplied (not dates however)
 SELECT time '05:00' * 2 as time_multiplied;
 
------------------- JOINING DATA FROM DIFFERENT SOURCES ------------------
+------------------------------------------------- JOINING DATA FROM DIFFERENT SOURCES -------------------------------------------------------------------
 
 -- different source systems can record dates and times in different formats
 -- internal clock of the servers may be slightly off as well
@@ -91,14 +91,14 @@ SELECT time '05:00' * 2 as time_multiplied;
 -- to prevent some events from being excluded, rather than filtering for action timestamps greater than the treatment group timestamp, allow events within a short interval window of time prior to the treatment timestamp 
 -- does the timestamp recorded represent when the action that happened on the device or when the event arrived in the database?
 
------------------- TRENDING THE DATA ------------------
+------------------------------------------------------ TRENDING THE DATA --------------------------------------------------------------------------------
 
 SELECT 
     sales_month,
     sales
 FROM retail_sales
 WHERE kind_of_business = 'Retail and food services sales, total';
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     date_part('year',sales_month::DATE) sales_year,
     SUM(sales) as sales
@@ -107,7 +107,7 @@ WHERE kind_of_business = 'Retail and food services sales, total'
 GROUP BY 1
 ORDER BY 1;
 -- graphing time series data at different levels of aggregation (weekly, monthly, yearly) is a good way to understand trends
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     date_part('year',sales_month) as sales_year,
     kind_of_business,
@@ -116,13 +116,13 @@ FROM retail_sales
 WHERE kind_of_business IN ('Book stores','Sporting goods stores','Hobby, toy, and game stores')
 GROUP BY 1,2
 ORDER BY 1,2
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- when our names contain an apostrophe, escape it this way
 WHERE kind_of_business in ('Men''s clothing stores', 'Women''s clothing stores')
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- calculating the gap between the two categories, the ratio, and the percent difference between them
 -- choose which depending on the version of the story you would like to tell
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- pivot the data so theres a single row for each year with a column for each category
 SELECT 
     date_part('year',sales_month::date) as sales_year,
@@ -132,7 +132,7 @@ FROM retail_sales
 WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores')
 GROUP BY 1
 ORDER BY 1;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- difference
 SELECT 
     sales_year,
@@ -146,7 +146,7 @@ FROM
         WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores')
         GROUP BY 1
         ORDER BY 1) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- or get the same results with a case statement rather than a subquery
 SELECT
     date_part('year',sales_month::date) as sales_year,
@@ -155,7 +155,7 @@ FROM retail_sales
 WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores')
 GROUP BY 1
 ORDER BY 1
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- ratio
 SELECT 
     sales_year,
@@ -169,7 +169,7 @@ FROM
         WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores')
         GROUP BY 1
         ORDER BY 1) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- percent difference
 SELECT 
     sales_year,
@@ -183,7 +183,7 @@ FROM
         WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores')
         GROUP BY 1
         ORDER BY 1) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- percent of total calculation
     -- we'll need to calculate the overall total in order to calculate percentage of total for each row
     -- this can be done with a self-JOIN or window function 
@@ -208,7 +208,7 @@ FROM
         GROUP BY 1,2,3
         ORDER BY 1,2,3
 ) aa;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- same results different method: sum window function and partition by sales_month
 SELECT 
     sales_month,
@@ -218,7 +218,7 @@ SELECT
     sales * 100 / SUM(sales) OVER (PARTITION BY sales_month) AS pct_total
 FROM retail_sales
 WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores');
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- percent of sales total within a longer time period (either by self-join or window function)
 SELECT
     sales_month,
@@ -238,7 +238,7 @@ FROM (
         GROUP BY 1,2,3
         ORDER BY 1,2,3
      ) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT 
     sales_month,
     kind_of_business,
@@ -248,7 +248,7 @@ SELECT
 FROM retail_sales
 WHERE kind_of_business IN ('Men''s clothing stores', 'Women''s clothing stores')
 ORDER BY 1,2;
------------------- INDEXING TO SEE PERCENT CHANGE OVER TIME -----------------------------
+------------------------------------------------- INDEXING TO SEE PERCENT CHANGE OVER TIME --------------------------------------------------------------
 -- indexing is a way to understand the change in a time series relative to a base period (starting point)
 -- pick a base period and compute the percent change in value from that base period for each subsequent period
 -- use combination of aggregation and self-joins or window functions
@@ -268,7 +268,7 @@ FROM
         GROUP BY 1
         ORDER BY 1
 ) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- find the percent change from this base year to each row
 SELECT 
     sales_year,
@@ -283,7 +283,7 @@ FROM
         WHERE kind_of_business = 'Women''s clothing stores'
         GROUP BY 1
 ) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- by simply order by desc instead of asc we can change our index year to the last value
 SELECT 
     sales_year,
@@ -298,7 +298,7 @@ FROM
         WHERE kind_of_business = 'Women''s clothing stores'
         GROUP BY 1
 ) a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- self join method
 SELECT
     sales_year,
@@ -332,7 +332,7 @@ FROM
  ) aaa
  ORDER BY 1
  ;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- indexed time series for men's and women's clothes
 SELECT
     sales_year,
@@ -354,7 +354,7 @@ FROM (
 -- common calculations: last twelve month (LTM) aka trailing twelve months (TTM), year-to-date (YTD)
 -- moving minimums and maximums can help in understanding the extremes of the data
 -- choosing the partitioning or grouping of data that is in the window
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- window of 12 months to get rolling annual sales
 -- table a is our anchor table from which we will gather our dates
 -- table b gathers the twelve months of sales that go into the moving averages
@@ -370,7 +370,7 @@ JOIN retail_sales b
     AND b.kind_of_business = 'Women''s clothing stores'
 WHERE a.kind_of_business = 'Women''s clothing stores'
     AND a.sales_month = '2019-12-01';
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- next we apply the aggregation (avg) 
 SELECT 
     a.sales_month,
@@ -386,7 +386,7 @@ WHERE a.kind_of_business = 'Women''s clothing stores'
     AND a.sales_month >= '1993-01-01'
 GROUP BY 1,2
 ORDER BY 1;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- frame clause allows you to specify which records to include in the window function
 -- by default all the records in the partition are included, however you can control the inclusion of records
 -- {RANGE | ROWS | GROUPS} BETWEEN frame_start AND frame_end
@@ -397,7 +397,7 @@ SELECT
     COUNT(sales) OVER (ORDER BY sales_month ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS records_count
 FROM retail_sales
 WHERE kind_of_business = 'Women''s clothing stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     a.date,
     b.sales_month,
@@ -414,7 +414,7 @@ ON b.sales_month BETWEEN a.date - INTERVAL '11 months' AND a.date
 WHERE a.date = a.first_day_of_month
 AND a.date BETWEEN '1993-01-01' AND '20202-12-01'
 ;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT 
     a.date,
     -- AVG(b.sales) AS moving_avg,
@@ -431,7 +431,7 @@ ON b.sales_month BETWEEN a.date - INTERVAL '11 months' AND a.date
 WHERE a.date = a.first_day_of_month
 AND a.date BETWEEN '1993-01-01' AND '2020-12-31'
 GROUP BY 1
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT a.sales_month, AVG(b.sales) AS moving_avg
 FROM 
         (SELECT DISTINCT sales_month
@@ -442,7 +442,7 @@ ON b.sales_month BETWEEN a.sales_month - INTERVAL '11 months' AND a.sales_month 
 AND b.kind_of_business = 'Women''s clothing stores'
 GROUP BY 1
 ORDER BY 1
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT a.sales_month, AVG(b.sales) AS moving_avg
 FROM 
         (SELECT DISTINCT sales_month
@@ -453,14 +453,14 @@ ON b.sales_month BETWEEN a.sales_month - INTERVAL '11 months' AND a.sales_month 
 AND b.kind_of_business = 'Women''s clothing stores'
 GROUP BY 1
 ORDER BY 1
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT 
     sales_month,
     sales,
     SUM(sales) OVER(PARTITION BY DATE_PART('year',sales_month) ORDER BY sales_month) AS sales_ytd
 FROM retail_sales
 WHERE kind_of_business = 'Women''s clothing stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     a.sales_month,
     a.sales,
@@ -472,25 +472,25 @@ AND b.sales_month <= a.sales_month -- why???
 AND b.kind_of_business = 'Women''s clothing stores'
 WHERE a.kind_of_business = 'Women''s clothing stores'
 GROUP BY 1,2
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     kind_of_business, sales_month, sales,
     LAG(sales_month) OVER(PARTITION BY kind_of_business ORDER BY sales_month)
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     kind_of_business, sales_month, sales,
     LAG(sales_month) OVER(PARTITION BY kind_of_business ORDER BY sales_month DESC)
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     kind_of_business, sales_month, sales,
     LEAD(sales_month,2) OVER(PARTITION BY kind_of_business ORDER BY sales_month)
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     kind_of_business,
     sales_month,
@@ -498,7 +498,7 @@ SELECT
     ROUND((sales / LAG(sales) OVER(PARTITION BY kind_of_business ORDER BY sales_month) - 1)*100,2) AS pct_growth_from_previous
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- subquery with each year and sum of sales for each year
 -- the outerquery will have year, sales that year, sales previous year, percent growth from previous year
 SELECT
@@ -514,14 +514,14 @@ FROM
         WHERE kind_of_business = 'Book stores'
         GROUP BY 1
         ORDER BY 1) a
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 -- the date part returns an integer not a date type
 SELECT
     sales_month,
     date_part('month',sales_month)
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     sales_month,
     sales,
@@ -529,7 +529,7 @@ SELECT
     LAG(sales) OVER (PARTITION BY date_part('month', sales_month) ORDER BY sales_month)
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     sales_month,
     sales,
@@ -537,7 +537,7 @@ SELECT
     ROUND((sales / LAG(sales) OVER (PARTITION BY date_part('month',sales_month) ORDER BY sales_month) -1) * 100,2) AS pct_diff
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     date_part('month',sales_month),
     to_char(sales_month,'Month'),
@@ -548,7 +548,7 @@ FROM retail_sales
 WHERE kind_of_business = 'Book stores'
 AND sales_month BETWEEN '1992-01-01' AND '1994-12-01'
 GROUP BY 1,2
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     sales_month,
     sales,
@@ -558,7 +558,7 @@ SELECT
 FROM retail_sales
 WHERE kind_of_business = 'Book stores'
 GROUP BY 1,2
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     sales_month,
     sales,
@@ -572,7 +572,7 @@ FROM
             LAG(sales, 3) OVER (PARTITION BY date_part('month',sales_month) ORDER BY sales_month) as prev_sales_3
          FROM retail_sales
          WHERE kind_of_business = 'Book stores') a;
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT
     sales_month,
     sales,
