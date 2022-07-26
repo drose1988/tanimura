@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------- Anomaly Detection ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- anomaly is something that is different from other members of the group
 -- aka outliers, novelties, noise, deviations, exceptions
 -- anomalys can be a result of real events or errors from data collection/input
@@ -15,7 +16,6 @@
 -- challenges are: knowing when a value or data point is common or rare, setting a threshold for marking values rare
 -- sometimes there is a "ground truth" about what the range these values should be in that we can reference
 -- other times its up to you to make a reasonable judgement call
-
 
 SELECT * 
 FROM earthquakes 
@@ -42,6 +42,7 @@ GROUP BY 1
 ORDER BY 1 DESC
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- given the frequency of -9.99 and -9, and how much bigger the value is than the next lowest, you can deduce that they represent an unknown value
 
 SELECT
@@ -228,6 +229,7 @@ FROM
         WHERE mag IS NOT NULL AND place LIKE '%Japan%') a
         
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- box plots can be compared across groupings of the data
 -- here we are grouping on year
 -- if you just group by everything in the outer query you can get all your box plot information for each year grouping
@@ -251,7 +253,7 @@ FROM
         GROUP BY 1) a
 GROUP BY 1,2,3,4,5,6,7
 
---------------------------------------------------------- Forms of Anomalys ------------------------------------------------------------------------------
+--------------------------------------------------------- Forms of Anomalies ------------------------------------------------------------------------------
 
 -- anomalies can we in the form of values, counts/frequencies, presence/absence
 
@@ -269,7 +271,6 @@ WHERE mag > 1
 GROUP BY 1
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 SELECT 
     net,
@@ -313,6 +314,7 @@ SELECT
 FROM earthquakes
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- creating a boolean flag field to tell us when the type value is different from the type value lowercased
 -- then find the specific records where this is the case
 
@@ -327,7 +329,6 @@ FROM
         GROUP BY 1,2,3
         ORDER BY 2,4 DESC) a
 WHERE flag = 'false'
-
 
 ----------------------------------------------- Anomalous Counts of Frequencies --------------------------------------------------------------------------
 
@@ -379,7 +380,6 @@ WHERE mag >= 6
 GROUP BY 1
 ORDER BY 2 DESC
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------- Anomalies from the Absence of Data -----------------------------------------------------------------------
 
 -- detecting the absence of data is difficult when you're not specifically looking for it
@@ -464,19 +464,18 @@ FROM
 GROUP BY 1,2
 ORDER BY 1 
 
-
 ------------------------------------------------------ Handling Anomalies --------------------------------------------------------------------------------
 
 -- how we handle anomalies depends on the source of the anomaly and end goal of our analysis
 
--------- invesigation --------
+----------- invesigation ---------------------------------------------------------------------------------------------------------------------------------
 
 -- process of investigating anomalies involves querying to go back and forth between between searching for patterns and looking at specific examples
 -- check records that share a certain attribute (from another field) and see if their values are anomalous too or something unsual going on
 -- this could unearth other anomalies
 -- after investigating and uncovering the source of the anomalies, get in touch with stakeholders and owners to be transparent 
 
------------ removal ----------
+----------- removal --------------------------------------------------------------------------------------------------------------------------------------
 
 -- if there is reason to believe an error in data collection caused the anomaly then all other values in the record might be compromised, so should delete it
 -- remove outliers if they skew the data to lead to to inappropriate conclusions? make sure you're not introducing bias though
@@ -506,7 +505,7 @@ SELECT
 FROM earthquakes
 WHERE place = 'Yellowstone National Park, Wyoming'
 
--- replace with alt value ----
+----------- replace with alt value -----------------------------------------------------------------------------------------------------------------------
 
 -- alternate value can be a default, substitute value, or nearest numerical value within a range, or summary statistic (avg, median)
 
@@ -524,6 +523,7 @@ SELECT
 FROM earthquakes
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- winsorization: this method takes the most extreme values and replaces them with a near low/high value that is not as extreme
 -- this can prevent misleading averages resulting from extreme outliers
 -- in this example all the magnitude values bigger than the 95% percentile value or smaller than the 5% percentile
@@ -547,13 +547,12 @@ ON 1 =1
 WHERE a.mag IS NOT NULL
 ORDER BY 3 DESC
 
--------- rescaling --------
+----------- rescaling ------------------------------------------------------------------------------------------------------------------------------------
 
 -- rescaling the values rather than replacing, allows us to retain all the values while still making analysis and graphing easy
 -- z score method is powerful especially when you have a combination of postive and negative values that you can normalize
 -- logarithmic scale transformations cannot use negative numbers
 -- graphing log values on a histogram has the effect of making the x axis range less influenced by the extreme values, and the smaller values get spread out
-
 
 SELECT
     ROUND(depth,1) AS depth,
@@ -567,11 +566,3 @@ ORDER BY 1 DESC
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- other commonly used scale transformations (for rescaling not removing): square root, cube root, reciprocal transformation
-
-
-
-
-
-
-
-
