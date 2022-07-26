@@ -217,7 +217,7 @@ GROUP BY 1
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- same query as earlier but we've only inclused purchases within 7 days of the cohorting event
--- by left joining game_purchases, you'll still get all the records from exp_assignment, and all the records that don't match the interval date will be null 
+-- by left joining game_purchases, you'll still get all the records from exp_assignment, all the records that don't match the interval date will be null 
 
 SELECT
     variant,
@@ -258,7 +258,8 @@ WHERE b.purch_date <= a.exp_date + INTERVAL '7 days'
 -- one and done vs. repeated exposure
 -- one and done experiences can only happen to a user once, can't repeat the process, analyzing this is relatively straightforward
 -- repeated exposure experiences are where a user encounters multiple changes over the course of their time using a product or service
--- difficulties around repeated exposure come from the novelty effect -> tendency for behavior to change just because something is new, not because its better/worse
+-- difficulties around repeated exposure come from the novelty effect -> 
+-- tendency for behavior to change just because something is new, rather than better/worse
 -- when a change happens the initial metrics look good but that may be due to novelty effect
 -- to combat this, we look at regression to the mean tendency and allow passage of time long enough for this regression to happen
 -- perform cohort analysis where entities can be observed for longer periods of time 
@@ -322,9 +323,9 @@ GROUP BY 1
 
 ---- Analysis of Populations Around a Threshold ----------------------------------------------------------------------------------------------------------
 
-
 -- the response value you get from your subject may be a continuous value with a threshold on either sides
--- instead of looking at the entire population, we can compare just the subjects that fall in the high threshold range to subjects in the low threshold range 
+-- instead of looking at the entire population:
+-- we can compare just the subjects that fall in the high threshold range to subjects in the low threshold range 
 -- we can construct our variants by splitting the data around these thresholds
 -- regression discontinuity design (RDD) is the formal name for this method
 -- the variants should be of similar size and be large enough to be able to determine statistical significance if its there
