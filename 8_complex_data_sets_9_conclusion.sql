@@ -503,3 +503,5 @@ ORDER BY 2 DESC
 -- this method could be troublesome if there are a large catalog of products, services etc
 -- the combinations of products ordered by customers can lead to a long output
 -- maybe remove the most common items purchased in the where clause to give the query more meaning
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
