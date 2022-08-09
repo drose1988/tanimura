@@ -6,10 +6,6 @@
 -- time series analysis: understand and quantify how things change over time
 -- forcasting is the common goal, however the past doesn't perfectly predict the future
 
-
-
-
-
 -- many databases are set to UTC the global standard, its the most common but certainly not universal
 -- the one drawback to UTC is that we lose information about the local time humans do actions 
 
