@@ -1,4 +1,5 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- important note: to get around the permission denied importing a csv
         -- go to terminal and type "open /tmp" into it
         -- drag the csv into this folder
@@ -220,6 +221,7 @@ FROM
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- replace used to change part of a string to something else or to remove the content entirely
+
 SELECT
 
     location,
@@ -792,3 +794,4 @@ LEFT JOIN stop_words b ON a.word = b.stop_word
 WHERE b.stop_word IS NULL
 GROUP BY 1
 ORDER BY 2 DESC
+----------------------------------------------------------------------------------------------------------------------------------------------------------
