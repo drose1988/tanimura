@@ -16,7 +16,7 @@
 -- numeric data can be positive or negative, mathematical functions can be applied, ex INT :: FLOAT :: DOUBLE :: DECIMAL
 -- boolean (true/false) is often used to create flags that summarize the presence of absense of a property in the data
 
---------------------------------------------- -------- Structured vs. Unstructured -----------------------------------------------------------------------
+------------------------------------------------------ Structured vs. Unstructured -----------------------------------------------------------------------
 
 -- most databases were designed to handle structured data
 -- when structured data is inserted into a table, each field is verified to ensure it conforms to the correct data type
@@ -25,7 +25,7 @@
 -- it is often stored outside of relational databases 
 -- this allows data to be loaded quickly but lacks data validation resulting in low quality data
 
------------------------------------------------ ------- 1st 2nd 3rd Party Data ---------------------------------------------------------------------------
+------------------------------------------------------- 1st 2nd 3rd Party Data ---------------------------------------------------------------------------
 
 -- first party data is collected by the organization itself
 -- collected through server logs or other systems that are built in-house to generate data of interest
@@ -40,7 +40,7 @@
 -- sparce data is when majority of the entries show up as nulls with few values in a column
 -- JSON is an approach to handle sparce entries, stores only the data present and omits the rest
 
------------------------------------------------ ----- Don't kill your database ---------------------------------------------------------------------------
+----------------------------------------------------- Don't kill your database ---------------------------------------------------------------------------
 
 -- take advantage of LIMIT when building queries, you can go through the steps with a LIMIT but when you're actually looking for final results take it off
 -- MOD function returns the remainder when one integer is divided by another
@@ -67,19 +67,27 @@ SELECT DISTINCT MOD(user_id,1000) FROM game_users -- this brings back a sample o
 -- you can create histograms with other aggregations like min max sum avg 
 
 -- simple GROUP BY to check frequency
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 SELECT fruit, COUNT(*) AS quanity
 FROM fruit_quantity
 GROUP BY 1
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 SELECT age, COUNT(customer_id) AS customers
 FROM customers
 GROUP BY 1
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- an aggregation followed by a frequency count (intermediate aggregation step)
 -- orders table with fields: date, customer_id, order_id, amount
 -- write a query that returns distributions of orders per customer
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 SELECT 
     orders,
     COUNT(*) AS num_customers
@@ -346,3 +354,4 @@ GROUP BY sales_month
 -- using UNION or UNION ALL the numbers of columns in each part of the query must match, along with the data types (with some mixing allowed)
 -- UNION removes duplicates while UNION ALL retains all records
 -- can be used to bring together data from differnet sources
+----------------------------------------------------------------------------------------------------------------------------------------------------------
