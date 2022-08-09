@@ -16,6 +16,7 @@
 -- element 3: random assignment into control or experimental varient group (cohorting system)
 -- experimentation in online systems differ from social science experiments in that the behaviors are already tracked
 -- data profiling before the experiment is important to track down potential issues that could hamper your analysis results
+
 ------------------------------------------------ Strength Limits of Experiment Analysis with SQL ---------------------------------------------------------
 
 -- relevant data already flows through the database so sql is convenient to use for experiementation 
@@ -331,3 +332,5 @@ GROUP BY 1
 -- best use of this method involves picking a few different threshold ranges (top/bottom 5%, top/bottom 10% etc.)
 -- again, this can prove causality but less conclusively
 -- pay careful attention to possible confounding factors that make your results less reliable
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
