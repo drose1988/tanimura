@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------- Anomaly Detection ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- anomaly is something that is different from other members of the group
 -- aka outliers, novelties, noise, deviations, exceptions
 -- anomalys can be a result of real events or errors from data collection/input
@@ -42,6 +43,7 @@ GROUP BY 1
 ORDER BY 1 DESC
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- given the frequency of -9.99 and -9, and how much bigger the value is than the next lowest, you can deduce that they represent an unknown value
 
 SELECT
@@ -210,7 +212,6 @@ ORDER BY 2 DESC
 -- the value range of the upper and lower whisker are typically 1.5 times the interquartile range
 -- for example the median magnitude here is 4.5 and values 4.3 - 4.7 makeup 50% of the distribution (the middle 25% to 75%)
 -- but we take the difference of 75% percentile and 25% percentile and multiply by 1.5 to get our interquartile range
--- 
 
 SELECT 
     ntile25,
@@ -313,6 +314,7 @@ SELECT
 FROM earthquakes
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- creating a boolean flag field to tell us when the type value is different from the type value lowercased
 -- then find the specific records where this is the case
 
@@ -568,10 +570,4 @@ ORDER BY 1 DESC
 
 -- other commonly used scale transformations (for rescaling not removing): square root, cube root, reciprocal transformation
 
-
-
-
-
-
-
-
+----------------------------------------------------------------------------------------------------------------------------------------------------------
